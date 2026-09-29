@@ -1,0 +1,1 @@
+import Link from 'next/link';export default function Page(){return <main className="wrap"><nav className="nav"><Link href="/dashboard">لوحة التحكم</Link><Link href="/f/demo">القمع</Link></nav><h1>المرشحون</h1><div className="card"><p>لا يوجد مرشحون بعد. عند إكمال أول تقييم سيظهر المرشح هنا بعد تفعيل قاعدة البيانات.</p></div></main>}
