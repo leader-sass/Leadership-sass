@@ -1,0 +1,4 @@
+import {createServerClient} from '@supabase/ssr';
+import {NextResponse,type NextRequest} from 'next/server';
+export async function middleware(req:NextRequest){let res=NextResponse.next({request:req});const s=createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!,process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,{cookies:{getAll:()=>req.cookies.getAll(),setAll(cs){cs.forEach(c=>req.cookies.set(c.name,c.value));res=NextResponse.next({request:req});cs.forEach(c=>res.cookies.set(c.name,c.value,c.options))}}});const {data:{user}}=await s.auth.getUser();if(!user&&(req.nextUrl.pathname.startsWith('/dashboard')||req.nextUrl.pathname.startsWith('/candidates'))){const u=req.nextUrl.clone();u.pathname='/login';return NextResponse.redirect(u)}return res}
+export const config={matcher:['/dashboard/:path*','/candidates/:path*']};
