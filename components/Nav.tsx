@@ -1,0 +1,2 @@
+import Link from 'next/link';
+export default function Nav(){return <aside className="side"><div className="brand"><span className="logo">L</span><div><b>منصة القيادة</b><small>MVP</small></div></div><nav><Link href="/dashboard">لوحة التحكم</Link><Link href="/candidates">المرشحون</Link><Link href="/f/demo">معاينة القمع</Link></nav><div className="sidefoot">نسخة تجريبية<br/><small>الاسم التجاري قيد الاختيار</small></div></aside>}
