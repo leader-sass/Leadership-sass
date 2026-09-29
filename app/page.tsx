@@ -1,0 +1,2 @@
+import Link from 'next/link';
+export default function Home(){return <main className="hero"><div><b>منصة القادة — MVP</b><h1>حوّل الاستقطاب من محادثات مشتتة<br/>إلى نظام واضح وقابل للمتابعة.</h1><p>قمع استقطاب، تقييم قابل للتفسير، Leader Score، CRM ومتابعة المرشحين من مكان واحد.</p><p><Link className="btn" href="/signup">إنشاء حساب</Link> <Link className="btn ghost" href="/f/demo">تجربة قمع المرشح</Link></p></div></main>}
