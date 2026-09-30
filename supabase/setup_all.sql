@@ -190,6 +190,26 @@ create policy auth_options_read on public.question_options for select to authent
 drop policy if exists auth_funnel_assessments_read on public.funnel_assessments;
 create policy auth_funnel_assessments_read on public.funnel_assessments for select to authenticated using(true);
 
+-- Public prospects may read only assessment questions/options attached to an active published funnel.
+drop policy if exists public_active_questions_read on public.questions;
+create policy public_active_questions_read on public.questions for select to anon
+using(exists(
+  select 1 from public.assessments a
+  join public.funnel_assessments fa on fa.assessment_id=a.id
+  join public.funnels f on f.id=fa.funnel_id
+  where a.id=questions.assessment_id and a.is_active=true and f.status='published'
+));
+
+drop policy if exists public_active_options_read on public.question_options;
+create policy public_active_options_read on public.question_options for select to anon
+using(exists(
+  select 1 from public.questions q
+  join public.assessments a on a.id=q.assessment_id
+  join public.funnel_assessments fa on fa.assessment_id=a.id
+  join public.funnels f on f.id=fa.funnel_id
+  where q.id=question_options.question_id and a.is_active=true and f.status='published'
+));
+
 -- System assessment seed (safe to rerun).
 do $$
 declare aid uuid; qid uuid; d text; p text; i int;
