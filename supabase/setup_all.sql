@@ -158,9 +158,29 @@ create policy owner_candidates on public.candidates for all to authenticated
 using(exists(select 1 from public.workspaces w where w.id=workspace_id and w.owner_id=auth.uid()))
 with check(exists(select 1 from public.workspaces w where w.id=workspace_id and w.owner_id=auth.uid()));
 
+-- Owner access for linked assessment, submissions, scores and interviews.
+drop policy if exists owner_funnel_assessments on public.funnel_assessments;
+create policy owner_funnel_assessments on public.funnel_assessments for all to authenticated
+using(exists(select 1 from public.funnels f join public.workspaces w on w.id=f.workspace_id where f.id=funnel_id and w.owner_id=auth.uid()))
+with check(exists(select 1 from public.funnels f join public.workspaces w on w.id=f.workspace_id where f.id=funnel_id and w.owner_id=auth.uid()));
+
+drop policy if exists owner_submissions_read on public.submissions;
+create policy owner_submissions_read on public.submissions for select to authenticated
+using(exists(select 1 from public.candidates c join public.workspaces w on w.id=c.workspace_id where c.id=candidate_id and w.owner_id=auth.uid()));
+
+drop policy if exists owner_scores_read on public.scores;
+create policy owner_scores_read on public.scores for select to authenticated
+using(exists(select 1 from public.submissions s join public.candidates c on c.id=s.candidate_id join public.workspaces w on w.id=c.workspace_id where s.id=submission_id and w.owner_id=auth.uid()));
+
+drop policy if exists owner_interview_requests on public.interview_requests;
+create policy owner_interview_requests on public.interview_requests for all to authenticated
+using(exists(select 1 from public.candidates c join public.workspaces w on w.id=c.workspace_id where c.id=candidate_id and w.owner_id=auth.uid()))
+with check(exists(select 1 from public.candidates c join public.workspaces w on w.id=c.workspace_id where c.id=candidate_id and w.owner_id=auth.uid()));
+
 drop policy if exists owner_notes on public.candidate_notes;
 create policy owner_notes on public.candidate_notes for all to authenticated
-using(author_id=auth.uid()) with check(author_id=auth.uid());
+using(author_id=auth.uid() and exists(select 1 from public.candidates c join public.workspaces w on w.id=c.workspace_id where c.id=candidate_id and w.owner_id=auth.uid()))
+with check(author_id=auth.uid() and exists(select 1 from public.candidates c join public.workspaces w on w.id=c.workspace_id where c.id=candidate_id and w.owner_id=auth.uid()));
 
 -- Read access to assessment structure for authenticated leaders.
 drop policy if exists auth_questions_read on public.questions;
