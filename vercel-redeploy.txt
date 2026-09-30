@@ -1,1 +1,1 @@
-Trigger Vercel production deployment after initial project setup.
+Trigger latest Vercel production deployment after signup verification.
